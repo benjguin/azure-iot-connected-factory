@@ -173,6 +173,7 @@ namespace Opc.Ua.Sample.Simulation
                     {
                         throw new Exception(String.Format("Failed to connect to assembly line for {0} seconds!", c_connectTimeout / 1000));
                     }
+                    System.Threading.Thread.Sleep(c_waitTime);
                 }
                 while (!(m_sessionAssembly.SessionConnected && m_sessionTest.SessionConnected && m_sessionPackaging.SessionConnected));
 

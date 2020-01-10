@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:2.1 AS build
+WORKDIR /app
+COPY . /app
+
+WORKDIR /app/Station
+run dotnet restore \
+    && dotnet build \
+    && dotnet publish -o build-output
+
+WORKDIR /app/MES
+run dotnet restore \
+    && dotnet build \
+    && dotnet publish -o build-output
+
+FROM mcr.microsoft.com/dotnet/core/runtime:2.1 AS runtime
+WORKDIR /app
+COPY --from=build /app/Station/build-output ./Station
+COPY --from=build /app/MES/build-output ./MES
+COPY --from=build /app/run-simulation-linux.sh ./
+
+ENTRYPOINT ["/bin/sh"]
+CMD ["/app/run-simulation-linux.sh"]
